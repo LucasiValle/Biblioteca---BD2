@@ -58,6 +58,26 @@ app.get("/livros", async (req, res) => {
   }
 });
 
+//busca de livros por filtro
+app.get("/livros/busca", async (req, res) => {
+  try {
+    const { titulo, autor, genero } = req.query;
+
+    const filtro = {};
+
+    if (titulo) filtro.titulo = { $regex: titulo, $options: "i" };
+    if (autor) filtro.autor = autor;
+    if (genero) filtro.genero = genero;
+
+    const livros = await collection.find(filtro).toArray();
+
+    res.json(livros);
+  } catch (erro) {
+    console.log("Erro no find:", erro);
+    res.status(500).send("Erro no find");
+  }
+});
+
 // Inserir novo livro no banco de dados (insert)
 app.post ("/livros", async (req, res) => {
   try {
@@ -73,7 +93,79 @@ app.post ("/livros", async (req, res) => {
   }
 });
 
+
+// Atualizar um livro (update)
+app.put("/livros/:id", async (req, res) => {
+  try {
+    const { ObjectId } = require("mongodb");
+
+    await collection.updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: req.body }
+    );
+
+    res.send("Livro atualizado com sucesso!");
+  } catch (erro) {
+    console.log("Erro ao atualizar:", erro);
+    res.status(500).send("Erro ao atualizar");
+  }
+});
+
+// Deletar livro
+app.delete("/livros/:id", async (req, res) => {
+  try {
+    const { ObjectId } = require("mongodb");
+
+    await collection.deleteOne({
+      _id: new ObjectId(req.params.id)
+    });
+
+    res.send("Livro removido!");
+  } catch (erro) {
+    console.log("Erro ao deletar:", erro);
+    res.status(500).send("Erro ao deletar");
+  }
+});
+
+// Substituir livro inteiro (replace)
+app.put("/livros/replace/:id", async (req, res) => {
+  try {
+    const { ObjectId } = require("mongodb");
+
+    await collection.replaceOne(
+      { _id: new ObjectId(req.params.id) },
+      req.body
+    );
+
+    res.send("Livro substituído!");
+  } catch (erro) {
+    console.log("Erro no replace:", erro);
+    res.status(500).send("Erro no replace");
+  }
+});
+
+//Contar Livros por categoria
+app.get("/livros/relatorio", async (req, res) => {
+  try {
+    const resultado = await collection.aggregate([
+      {
+        $group: {
+          _id: "$genero",
+          totalExemplares: { $sum: "$exemplares" }
+        }
+      }
+    ]).toArray();
+
+    res.json(resultado);
+  } catch (erro) {
+    console.log("Erro no aggregate:", erro);
+    res.status(500).send("Erro no aggregate");
+  }
+});
+
 // Inicia o servidor na porta 3000
 app.listen(3000, () => {
   console.log("Servidor rodando em http://localhost:3000");
 });
+
+
