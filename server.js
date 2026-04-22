@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 
 // String de conexão com o MongoDB local
-const uri = "mongodb://127.0.0.1:27017";
+const uri = "mongodb://localhost:27017";
 
 // Cria o cliente MongoDB
 const client = new MongoClient(uri);
@@ -36,11 +36,17 @@ async function conectar() {
 // Executa a conexão com o banco
 conectar();
 
+//TONINHO:
+//Permitir o navegador acessar os arquivos dessa pasta 
+app.use(express.static("interface"));
+
 // Rota principal (teste)
 // Quando acessar http://localhost:3000
+/* TONINHO:
 app.get("/", (req, res) => {
   res.send("Servidor funcionando com MongoDB!");
 });
+*/
 
 app.get("/livros", async (req, res) => {
   try {

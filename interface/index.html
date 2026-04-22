@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Biblioteca</title>
+</head>
+<body>
+<!--
+  <h1>📚 Minha Biblioteca</h1>
+  <p>Se você está vendo isso, o Express está funcionando!</p>
+-->
+
+<!--Padrão para acessar o servidor --- http://localhost:3000-->
+
+<h1>📚 Biblioteca</h1>
+
+<input id="titulo" placeholder="Título do livro">
+<input id="autor" placeholder="Autor">
+<button onclick="adicionarLivro()">Adicionar</button>
+
+<hr>
+
+<button onclick="carregarLivros()">Carregar livros</button>
+<ul id="lista"></ul>
+
+<script>
+async function adicionarLivro() {
+  const titulo = document.getElementById("titulo").value;
+  const autor = document.getElementById("autor").value;
+
+  await fetch("/livros", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ titulo, autor })
+  });
+
+  alert("Livro adicionado!");
+}
+
+async function carregarLivros() {
+  const res = await fetch("/livros");
+  const livros = await res.json();
+
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  livros.forEach(livro => {
+    const li = document.createElement("li");
+    li.textContent = `${livro.titulo} - ${livro.autor}`;
+    lista.appendChild(li);
+  });
+}
+</script>
+
+</body>
+</html>
