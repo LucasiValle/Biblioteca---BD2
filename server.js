@@ -58,6 +58,30 @@ app.get("/livros", async (req, res) => {
   }
 });
 
+
+app.get("/livros/busca", async (req, res) => {
+  try {
+    const { termo } = req.query;
+
+    const filtro = {};
+
+    if (termo) {
+      filtro.$or = [
+        { titulo: { $regex: termo, $options: "i" } },
+        { autor: { $regex: termo, $options: "i" } },
+        { genero: { $regex: termo, $options: "i" } }
+      ];
+    }
+
+    const livros = await collection.find(filtro).toArray();
+
+    res.json(livros);
+  } catch (erro) {
+    console.log("Erro no find:", erro);
+    res.status(500).send("Erro no find");
+  }
+});
+/*
 //busca de livros por filtro
 app.get("/livros/busca", async (req, res) => {
   try {
@@ -76,7 +100,7 @@ app.get("/livros/busca", async (req, res) => {
     console.log("Erro no find:", erro);
     res.status(500).send("Erro no find");
   }
-});
+});*/
 
 // Inserir novo livro no banco de dados (insert)
 app.post ("/livros", async (req, res) => {
@@ -97,10 +121,8 @@ app.post ("/livros", async (req, res) => {
 // Atualizar um livro (update)
 app.put("/livros/:id", async (req, res) => {
   try {
-    const { ObjectId } = require("mongodb");
-
     await collection.updateOne(
-      { _id: new ObjectId(req.params.id) },
+      { _id: req.params.id },
       { $set: req.body }
     );
 
@@ -114,10 +136,10 @@ app.put("/livros/:id", async (req, res) => {
 // Deletar livro
 app.delete("/livros/:id", async (req, res) => {
   try {
-    const { ObjectId } = require("mongodb");
+    const id = req.params.id;
 
     await collection.deleteOne({
-      _id: new ObjectId(req.params.id)
+      _id: id
     });
 
     res.send("Livro removido!");
@@ -130,10 +152,8 @@ app.delete("/livros/:id", async (req, res) => {
 // Substituir livro inteiro (replace)
 app.put("/livros/replace/:id", async (req, res) => {
   try {
-    const { ObjectId } = require("mongodb");
-
     await collection.replaceOne(
-      { _id: new ObjectId(req.params.id) },
+      { _id: req.params.id },
       req.body
     );
 

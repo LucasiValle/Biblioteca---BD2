@@ -3,136 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <title>Biblioteca</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
-<body>
-<!--
-  <h1>📚 Minha Biblioteca</h1>
-  <p>Se você está vendo isso, o Express está funcionando!</p>
--->
 
-<!--Padrão para acessar o servidor --- http://localhost:3000-->
-
-<h1>📚 Biblioteca</h1>
-
-
-<div>
   
-<input id="titulo" placeholder="Título do livro">
-<input id="autor" placeholder="Autor">
-<input id="genero" placeholder="Gênero">
-<input id="exemplares" type="number" placeholder="Exemplares">
+  <!--
+    <h1>📚 Minha Biblioteca</h1>
+    <p>Se você está vendo isso, o Express está funcionando!</p>
+  -->
 
-<button onclick="buscarLivros()">Buscar</button>
-<button onclick="adicionarLivro()">Adicionar</button>
-<button onclick="verRelatorio()">Ver relatório</button>
-<button onclick="carregarLivros()">Carregar livros</button>
+  <!--Padrão para acessar o servidor --- http://localhost:3000-->
+
+<body>
+
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">📚 Biblioteca</h2>
+
+    <!-- <button onclick="buscarTopo()">🔍 Buscar</button> -->
+    <button onclick="carregarLivros()">📖 Livros</button>
+    <button onclick="">🔍 Usuarios</button>
+    <button onclick="verRelatorio()">📊 Relatório</button>
+    
+    <!-- <button onclick="">🔍 Adicionar</button> -->
+  </aside>
+
+  <!-- CONTEÚDO -->
+  <main class="conteudo">
+
+    <!-- BUSCA -->
+    <div class="topo">
+      <input id="buscaTopo" placeholder="Buscar livros...">
+      <button onclick="buscarTopo()">Buscar</button>
+    </div>
+
+    <!-- RELATÓRIO -->
+    <ul id="relatorio"></ul>
+
+    <!-- LISTA -->
+    <ul id="lista"></ul>
+
+  </main>
 
 </div>
 
-<div>
-
-<ul id="relatorio"></ul>
-<ul id="lista"></ul>
-
-</div>
-
-
-<script>
-async function adicionarLivro() {
-  const titulo = document.getElementById("titulo").value;
-  const autor = document.getElementById("autor").value;
-  const genero = document.getElementById("genero").value;
-  const exemplares = parseInt(document.getElementById("exemplares").value) || 0;
-
-  await fetch("/livros", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      titulo,
-      autor,
-      genero,
-      exemplares,
-      emprestimos: []
-    })
-  });
-
-  alert("Livro adicionado!");
-}
-
-async function carregarLivros() {
-  const res = await fetch("/livros");
-  const livros = await res.json();
-
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
-
-  livros.forEach(livro => {
-    const li = document.createElement("li");
-
-    li.innerHTML = `
-      ID: ${livro._id} <br>
-      ${livro.titulo} - ${livro.autor} | ${livro.genero} | ${livro.exemplares} exemplares
-      <button onclick="deletarLivro('${livro._id}')">Excluir</button>
-    `;
-
-    lista.appendChild(li);
-  });
-}
-
-async function deletarLivro(id) {
-  await fetch(`/livros/${id}`, {
-    method: "DELETE"
-  });
-
-  alert("Livro removido!");
-  carregarLivros();
-}
-
-async function verRelatorio() {
-  const res = await fetch("/livros/relatorio");
-  const dados = await res.json();
-
-  const lista = document.getElementById("relatorio");
-  lista.innerHTML = "";
-
-  dados.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = `${item._id}: ${item.totalExemplares} exemplares`;
-    lista.appendChild(li);
-  });
-}
-
-async function buscarLivros() {
-  const titulo = document.getElementById("titulo").value;
-  const autor = document.getElementById("autor").value;
-  const genero = document.getElementById("genero").value;
-
-  // monta a URL dinâmica
-  let url = "/livros/busca?";
-
-  if (titulo) url += `titulo=${encodeURIComponent(titulo)}&`;
-  if (autor) url += `autor=${encodeURIComponent(autor)}&`;
-  if (genero) url += `genero=${encodeURIComponent(genero)}&`;
-
-  const res = await fetch(url);
-  const livros = await res.json();
-
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
-
-  livros.forEach(livro => {
-    const li = document.createElement("li");
-
-    li.innerHTML = `
-      ${livro.titulo} - ${livro.autor} | ${livro.genero} | ${livro.exemplares} exemplares
-    `;
-
-    lista.appendChild(li);
-  });
-}
-</script>
-
+<script src="script.js"></script>
 </body>
+
 </html>
+

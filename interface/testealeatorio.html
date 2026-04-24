@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Biblioteca</title>
+  
+</head>
+<body>
+
+  
+  <!--
+    <h1>📚 Minha Biblioteca</h1>
+    <p>Se você está vendo isso, o Express está funcionando!</p>
+  -->
+
+  <!--Padrão para acessar o servidor --- http://localhost:3000-->
+
+  <header>
+
+    <h2 style="margin: 0;">📚 Biblioteca</h2>
+
+    <input 
+      id="buscaTopo" 
+      placeholder="Buscar livros..."
+      style="flex: 1; padding: 8px;"
+    >
+
+    <button onclick="buscarTopo()">Buscar</button>
+
+  </header>
+
+
+  <h1>📚 Biblioteca</h1>
+
+  <!--Ações-->
+  <div>
+    
+  <input id="titulo" placeholder="Título do livro">
+  <input id="autor" placeholder="Autor">
+  <input id="genero" placeholder="Gênero">
+  <input id="exemplares" type="number" placeholder="Exemplares">
+
+  <!-- <button onclick="buscarLivros()">Buscar</button> -->
+  <button onclick="adicionarLivro()">Adicionar</button>
+  <!-- <button onclick="verRelatorio()">Ver relatório</button> -->
+  <button onclick="carregarLivros()">Carregar livros</button>
+
+  </div>
+
+  <!-- RELATÓRIO -->
+  <div>
+    <button onclick="verRelatorio()">Ver relatório</button>
+    <ul id="relatorio"></ul>
+  </div>
+
+  <hr>
+
+  <!-- LISTA -->
+  <div>
+    <ul id="lista"></ul>
+  </div>
+
+
+    <script src="script.js"></script>
+</body>
+
+
+
+</html>
+
