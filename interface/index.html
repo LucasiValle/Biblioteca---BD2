@@ -5,15 +5,7 @@
   <title>Biblioteca</title>
   <link rel="stylesheet" href="./style.css">
 </head>
-
-  
-  <!--
-    <h1>📚 Minha Biblioteca</h1>
-    <p>Se você está vendo isso, o Express está funcionando!</p>
-  -->
-
   <!--Padrão para acessar o servidor --- http://localhost:3000-->
-
 <body>
 
 <div class="container">
@@ -24,8 +16,10 @@
 
     <!-- <button onclick="buscarTopo()">🔍 Buscar</button> -->
     <button onclick="carregarLivros()">📖 Livros</button>
-    <button onclick="">🔍 Usuarios</button>
+    <button onclick="carregarUsuarios()">👤 Usuarios</button>
+    <button onclick="abrirModalAdicionarUsuario()">➕ Novo Usuário</button>
     <button onclick="verRelatorio()">📊 Relatório</button>
+    <!-- <button onclick="abrirModalAdicionar()">➕ Adicionar</button> -->
     
     <!-- <button onclick="">🔍 Adicionar</button> -->
   </aside>
@@ -37,6 +31,7 @@
     <div class="topo">
       <input id="buscaTopo" placeholder="Buscar livros...">
       <button onclick="buscarTopo()">Buscar</button>
+      <button onclick="abrirModalAdicionar()">Adicionar</button>
     </div>
 
     <!-- RELATÓRIO -->
@@ -45,12 +40,51 @@
     <!-- LISTA -->
     <ul id="lista"></ul>
 
+    <!-- LISTA DE USUÁRIOS -->
+    <ul id="listaUsuarios"></ul>
+
   </main>
 
+</div>
+
+<!-- MODAL ADICIONAR / EDITAR -->
+<div id="modalLivro" class="modal">
+  <div class="modal-conteudo">
+    <h2 id="modalTitulo">Adicionar Livro</h2>
+
+    <input id="modalId" type="hidden">
+    <input id="modalIdManual" placeholder="ID ex: 16">
+    <input id="modalTituloLivro" placeholder="Título">
+    <input id="modalAutor" placeholder="Autor">
+    <input id="modalGenero" placeholder="Gênero">
+    <input id="modalExemplares" type="number" placeholder="Exemplares">
+    <input id="modalImagem" placeholder="Imagem ex: 1.jpg">
+
+    <div class="modal-botoes">
+      <button onclick="salvarLivro()">Salvar</button>
+      <button onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL USUÁRIO -->
+<div id="modalUsuario" class="modal">
+  <div class="modal-conteudo">
+    <h2 id="modalTituloUsuario">Adicionar Usuário</h2>
+
+    <input id="usuarioId" placeholder="ID ex: u1">
+    <input id="usuarioNome" placeholder="Nome">
+    <input id="usuarioEmail" placeholder="Email">
+    <input id="usuarioTelefone" placeholder="Telefone">
+
+    <div class="modal-botoes">
+      <button onclick="salvarUsuario()">Salvar</button>
+      <button onclick="fecharModalUsuario()">Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <script src="script.js"></script>
 </body>
 
 </html>
-

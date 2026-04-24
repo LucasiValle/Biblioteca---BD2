@@ -18,6 +18,7 @@ const client = new MongoClient(uri);
 
 // Variável que vai armazenar a coleção "livros"
 let collection;
+let usuarios;
 
 // Função assíncrona para conectar ao banco de dados
 async function conectar() {
@@ -29,6 +30,9 @@ async function conectar() {
 
   // Seleciona a coleção "livros"
   collection = db.collection("livros");
+
+  // Seleciona a coleção "usuarios"
+  usuarios = db.collection("usuarios");
 
   console.log("MongoDB conectado");
 }
@@ -183,9 +187,45 @@ app.get("/livros/relatorio", async (req, res) => {
   }
 });
 
+// Buscar usuários
+app.get("/usuarios", async (req, res) => {
+  try {
+    const listaUsuarios = await usuarios.find().toArray();
+    res.json(listaUsuarios);
+  } catch (erro) {
+    console.log("Erro ao buscar usuários:", erro);
+    res.status(500).send("Erro ao buscar usuários");
+  }
+});
+
+// Inserir novo usuário no banco de dados (insert)
+app.post("/usuarios", async (req, res) => {
+  try {
+    await usuarios.insertOne(req.body);
+
+    res.send("Usuário inserido com sucesso!");
+  } catch (erro) {
+    console.log("Erro ao inserir usuário:", erro);
+    res.status(500).send("Erro ao inserir usuário");
+  }
+});
+
+// Substituir usuário inteiro (replace)
+app.put("/usuarios/replace/:id", async (req, res) => {
+  try {
+    await usuarios.replaceOne(
+      { _id: req.params.id },
+      req.body
+    );
+
+    res.send("Usuário substituído!");
+  } catch (erro) {
+    console.log("Erro no replace do usuário:", erro);
+    res.status(500).send("Erro no replace do usuário");
+  }
+});
+
 // Inicia o servidor na porta 3000
 app.listen(3000, () => {
   console.log("Servidor rodando em http://localhost:3000");
 });
-
-
