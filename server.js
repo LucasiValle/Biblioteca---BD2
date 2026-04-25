@@ -1,3 +1,6 @@
+// Rota principal (teste)
+// Quando acessar http://localhost:3000
+
 // Importa o framework Express (usado para criar o servidor web)
 const express = require("express");
 
@@ -40,17 +43,8 @@ async function conectar() {
 // Executa a conexão com o banco
 conectar();
 
-//TONINHO:
 //Permitir o navegador acessar os arquivos dessa pasta 
 app.use(express.static("interface"));
-
-// Rota principal (teste)
-// Quando acessar http://localhost:3000
-/* TONINHO:
-app.get("/", (req, res) => {
-  res.send("Servidor funcionando com MongoDB!");
-});
-*/
 
 app.get("/livros", async (req, res) => {
   try {
@@ -62,7 +56,7 @@ app.get("/livros", async (req, res) => {
   }
 });
 
-
+// Busca de livros por termo (titulo, autor ou genero)
 app.get("/livros/busca", async (req, res) => {
   try {
     const { termo } = req.query;
@@ -85,26 +79,6 @@ app.get("/livros/busca", async (req, res) => {
     res.status(500).send("Erro no find");
   }
 });
-/*
-//busca de livros por filtro
-app.get("/livros/busca", async (req, res) => {
-  try {
-    const { titulo, autor, genero } = req.query;
-
-    const filtro = {};
-
-    if (titulo) filtro.titulo = { $regex: titulo, $options: "i" };
-    if (autor) filtro.autor = autor;
-    if (genero) filtro.genero = genero;
-
-    const livros = await collection.find(filtro).toArray();
-
-    res.json(livros);
-  } catch (erro) {
-    console.log("Erro no find:", erro);
-    res.status(500).send("Erro no find");
-  }
-});*/
 
 // Inserir novo livro no banco de dados (insert)
 app.post ("/livros", async (req, res) => {
@@ -222,6 +196,68 @@ app.put("/usuarios/replace/:id", async (req, res) => {
   } catch (erro) {
     console.log("Erro no replace do usuário:", erro);
     res.status(500).send("Erro no replace do usuário");
+  }
+});
+
+
+// Realizar empréstimo de livro
+app.post("/emprestimos", async (req, res) => {
+  try {
+    const { livroId, usuarioId } = req.body;
+
+    const livro = await collection.findOne({ _id: livroId });
+    const usuario = await usuarios.findOne({ _id: usuarioId });
+
+    if (!livro) {
+      return res.status(404).send("Livro não encontrado");
+    }
+
+    if (!usuario) {
+      return res.status(404).send("Usuário não encontrado");
+    }
+
+    const emprestimos = livro.emprestimos || [];
+
+    if (emprestimos.includes(usuarioId)) {
+      return res.status(400).send("Este usuário já pegou este livro emprestado");
+    }
+
+    if (emprestimos.length >= livro.exemplares) {
+      return res.status(400).send("Não há exemplares disponíveis");
+    }
+
+    await collection.updateOne(
+      { _id: livroId },
+      { $push: { emprestimos: usuarioId } }
+    );
+
+    res.send("Empréstimo realizado com sucesso!");
+  } catch (erro) {
+    console.log("Erro ao realizar empréstimo:", erro);
+    res.status(500).send("Erro ao realizar empréstimo");
+  }
+});
+
+// Devolver livro
+app.post("/devolucoes", async (req, res) => {
+  try {
+    const { livroId, usuarioId } = req.body;
+
+    const livro = await collection.findOne({ _id: livroId });
+
+    if (!livro) {
+      return res.status(404).send("Livro não encontrado");
+    }
+
+    await collection.updateOne(
+      { _id: livroId },
+      { $pull: { emprestimos: usuarioId } }
+    );
+
+    res.send("Livro devolvido com sucesso!");
+  } catch (erro) {
+    console.log("Erro ao devolver livro:", erro);
+    res.status(500).send("Erro ao devolver livro");
   }
 });
 

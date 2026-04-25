@@ -25,11 +25,17 @@ async function carregarLivros() {
   const res = await fetch("/livros");
   const livros = await res.json();
 
+  document.getElementById("relatorio").innerHTML = "";
+  document.getElementById("listaUsuarios").innerHTML = "";
+
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
 
   livros.forEach(livro => {
     const li = document.createElement("li");
+
+    const emprestados = livro.emprestimos ? livro.emprestimos.length : 0;
+    const disponiveis = livro.exemplares - emprestados;
 
     li.innerHTML = `
        <img 
@@ -41,32 +47,18 @@ async function carregarLivros() {
       <p>ID: ${livro._id}</p>
       <p>${livro.autor}</p>
       <p>${livro.genero}</p>
-      <p>${livro.exemplares} exemplares</p>
+      <p>Total: ${livro.exemplares} exemplares</p>
+      <p>Emprestados: ${emprestados}</p>
+      <p>Disponíveis: ${disponiveis}</p>
 
       <button onclick="deletarLivro('${livro._id}')">🗑️ Excluir</button>
       <button onclick='abrirModalEditar(${JSON.stringify(livro)})'>✏️ Editar</button>
+      <button onclick="abrirModalEmprestimo('${livro._id}')">📚 Emprestar</button>
     `;
 
     lista.appendChild(li);
   });
 }
-
-/*async function editarLivro(id) {
-  const novoTitulo = prompt("Novo título:");
-  if (!novoTitulo) return;
-
-  await fetch(`/livros/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ titulo: novoTitulo })
-  });
-
-  alert("Livro atualizado!");
-  carregarLivros();
-}*/
-
 
 function abrirModalAdicionar() {
   document.getElementById("modalTitulo").textContent = "Adicionar Livro";
@@ -149,6 +141,9 @@ async function verRelatorio() {
   const res = await fetch("/livros/relatorio");
   const dados = await res.json();
 
+  document.getElementById("lista").innerHTML = "";
+  document.getElementById("listaUsuarios").innerHTML = "";
+
   const lista = document.getElementById("relatorio");
   lista.innerHTML = "";
 
@@ -165,11 +160,17 @@ async function buscarTopo() {
   const res = await fetch(`/livros/busca?termo=${encodeURIComponent(termo)}`);
   const livros = await res.json();
 
+  document.getElementById("relatorio").innerHTML = "";
+  document.getElementById("listaUsuarios").innerHTML = "";
+
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
 
   livros.forEach(livro => {
     const li = document.createElement("li");
+
+    const emprestados = livro.emprestimos ? livro.emprestimos.length : 0;
+    const disponiveis = livro.exemplares - emprestados;
 
     li.innerHTML = `
        <img 
@@ -181,10 +182,13 @@ async function buscarTopo() {
       <p>ID: ${livro._id}</p>
       <p>${livro.autor}</p>
       <p>${livro.genero}</p>
-      <p>${livro.exemplares} exemplares</p>
+      <p>Total: ${livro.exemplares} exemplares</p>
+      <p>Emprestados: ${emprestados}</p>
+      <p>Disponíveis: ${disponiveis}</p>
 
       <button onclick="deletarLivro('${livro._id}')">🗑️ Excluir</button>
      <button onclick='abrirModalEditar(${JSON.stringify(livro)})'>✏️ Editar</button>
+     <button onclick="abrirModalEmprestimo('${livro._id}')">📚 Emprestar</button>
     `;
 
     lista.appendChild(li);
@@ -204,6 +208,9 @@ async function carregarUsuarios() {
   const res = await fetch("/usuarios");
   const usuarios = await res.json();
 
+  const resLivros = await fetch("/livros");
+  const livros = await resLivros.json();
+
   document.getElementById("lista").innerHTML = "";
   document.getElementById("relatorio").innerHTML = "";
 
@@ -213,11 +220,31 @@ async function carregarUsuarios() {
   usuarios.forEach(usuario => {
     const li = document.createElement("li");
 
+    const livrosDoUsuario = livros.filter(livro => {
+      return livro.emprestimos && livro.emprestimos.includes(usuario._id);
+    });
+
+    let livrosEmprestados = "<p>Nenhum livro emprestado.</p>";
+
+    if (livrosDoUsuario.length > 0) {
+      livrosEmprestados = livrosDoUsuario.map(livro => {
+        return `
+          <p>
+            📚 ${livro.titulo}
+            <button onclick="devolverLivro('${livro._id}', '${usuario._id}')">Devolver</button>
+          </p>
+        `;
+      }).join("");
+    }
+
     li.innerHTML = `
       <h3>${usuario.nome}</h3>
       <p>ID: ${usuario._id}</p>
       <p>Email: ${usuario.email}</p>
       <p>Telefone: ${usuario.telefone}</p>
+
+      <h4>Livros emprestados:</h4>
+      ${livrosEmprestados}
 
       <button onclick='abrirModalEditarUsuario(${JSON.stringify(usuario)})'>✏️ Editar</button>
     `;
@@ -289,5 +316,69 @@ async function salvarUsuario() {
   }
 
   fecharModalUsuario();
+  carregarUsuarios();
+}
+
+
+async function abrirModalEmprestimo(livroId) {
+  document.getElementById("emprestimoLivroId").value = livroId;
+
+  const res = await fetch("/usuarios");
+  const usuarios = await res.json();
+
+  const select = document.getElementById("selectUsuario");
+  select.innerHTML = "";
+
+  usuarios.forEach(u => {
+    const option = document.createElement("option");
+    option.value = u._id;
+    option.textContent = u.nome;
+    select.appendChild(option);
+  });
+
+  document.getElementById("modalEmprestimo").style.display = "flex";
+}
+
+function fecharModalEmprestimo() {
+  document.getElementById("modalEmprestimo").style.display = "none";
+}
+
+async function confirmarEmprestimo() {
+  const livroId = document.getElementById("emprestimoLivroId").value;
+  const usuarioId = document.getElementById("selectUsuario").value;
+
+  const res = await fetch("/emprestimos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      livroId,
+      usuarioId
+    })
+  });
+
+  const msg = await res.text();
+  alert(msg);
+
+  fecharModalEmprestimo();
+  carregarLivros();
+}
+
+async function devolverLivro(livroId, usuarioId) {
+  const res = await fetch("/devolucoes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      livroId,
+      usuarioId
+    })
+  });
+
+  const msg = await res.text();
+  alert(msg);
+
   carregarUsuarios();
 }
