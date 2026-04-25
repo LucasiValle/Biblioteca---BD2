@@ -154,19 +154,26 @@ async function verRelatorio() {
   document.getElementById("lista").innerHTML = "";
   document.getElementById("listaUsuarios").innerHTML = "";
 
-  const tabela = document.querySelector("#tabelaRelatorio tbody");
+  const container = document.getElementById("relatorioCards");
+container.innerHTML = "";
 
-  tabela.innerHTML = "";
+// (opcional) ordenar do maior pro menor
+dados.sort((a, b) => b.totalExemplares - a.totalExemplares);
 
-  dados.forEach(item => {
-    const linha = `
-      <tr>
-        <td>${item._id}</td>
-        <td>${item.totalExemplares}</td>
-      </tr>
-    `;
-    tabela.innerHTML += linha;
-  });
+dados.forEach(item => {
+  const card = document.createElement("div");
+  card.classList.add("cardGenero");
+
+  card.innerHTML = `
+    <h3>${item._id}</h3>
+    <p>${item.totalExemplares} livros</p>
+  `;
+
+  // clique no gênero
+  card.onclick = () => mostrarLivrosPorGenero(item._id);
+
+  container.appendChild(card);
+});
 }
 
 async function buscarTopo() {
@@ -421,4 +428,39 @@ function animarTroca() {
   setTimeout(() => {
     conteudo.classList.remove("fade");
   }, 300);
+}
+async function mostrarLivrosPorGenero(genero) {
+  const res = await fetch("/livros");
+  const livros = await res.json();
+
+  const filtrados = livros.filter(l => l.genero === genero);
+
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  // mostra área de livros
+  document.getElementById("areaLivros").style.display = "block";
+  document.getElementById("areaUsuarios").style.display = "none";
+  document.getElementById("areaRelatorio").style.display = "none";
+
+  filtrados.forEach(livro => {
+    const li = document.createElement("li");
+
+    const emprestados = livro.emprestimos ? livro.emprestimos.length : 0;
+    const disponiveis = livro.exemplares - emprestados;
+
+    li.innerHTML = `
+      <img 
+        src="/img/${livro.imagem || 'padrao.jpg'}" 
+        onerror="this.onerror=null; this.src='/img/padrao.png';"
+      >
+      <h3>${livro.titulo}</h3>
+      <p>${livro.autor}</p>
+      <p>${livro.genero}</p>
+      <p>Total: ${livro.exemplares}</p>
+      <p>Disponíveis: ${disponiveis}</p>
+    `;
+
+    lista.appendChild(li);
+  });
 }
