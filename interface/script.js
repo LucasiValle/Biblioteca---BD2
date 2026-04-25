@@ -22,10 +22,14 @@ async function adicionarLivro() {
 }
 
 async function carregarLivros() {
+  animarTroca();
+  setAtivo("btnLivros");
   const res = await fetch("/livros");
   const livros = await res.json();
 
-  document.getElementById("relatorio").innerHTML = "";
+  document.getElementById("areaLivros").style.display = "block";
+  document.getElementById("areaUsuarios").style.display = "none";
+  document.getElementById("areaRelatorio").style.display = "none";
   document.getElementById("listaUsuarios").innerHTML = "";
 
   const lista = document.getElementById("lista");
@@ -58,6 +62,7 @@ async function carregarLivros() {
 
     lista.appendChild(li);
   });
+  console.log("Carregando livros");
 }
 
 function abrirModalAdicionar() {
@@ -138,19 +143,29 @@ async function salvarLivro() {
 }
 
 async function verRelatorio() {
+  animarTroca();
+  setAtivo("btnRelatorio");
   const res = await fetch("/livros/relatorio");
   const dados = await res.json();
 
+  document.getElementById("areaLivros").style.display = "none";
+  document.getElementById("areaUsuarios").style.display = "none";
+  document.getElementById("areaRelatorio").style.display = "block";
   document.getElementById("lista").innerHTML = "";
   document.getElementById("listaUsuarios").innerHTML = "";
 
-  const lista = document.getElementById("relatorio");
-  lista.innerHTML = "";
+  const tabela = document.querySelector("#tabelaRelatorio tbody");
+
+  tabela.innerHTML = "";
 
   dados.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = `${item._id}: ${item.totalExemplares} exemplares`;
-    lista.appendChild(li);
+    const linha = `
+      <tr>
+        <td>${item._id}</td>
+        <td>${item.totalExemplares}</td>
+      </tr>
+    `;
+    tabela.innerHTML += linha;
   });
 }
 
@@ -160,7 +175,6 @@ async function buscarTopo() {
   const res = await fetch(`/livros/busca?termo=${encodeURIComponent(termo)}`);
   const livros = await res.json();
 
-  document.getElementById("relatorio").innerHTML = "";
   document.getElementById("listaUsuarios").innerHTML = "";
 
   const lista = document.getElementById("lista");
@@ -205,14 +219,18 @@ async function deletarLivro(id) {
 }
 
 async function carregarUsuarios() {
+  animarTroca();
+  setAtivo("btnUsuarios");
   const res = await fetch("/usuarios");
   const usuarios = await res.json();
 
   const resLivros = await fetch("/livros");
   const livros = await resLivros.json();
 
+  document.getElementById("areaLivros").style.display = "none";
+  document.getElementById("areaUsuarios").style.display = "block";
+  document.getElementById("areaRelatorio").style.display = "none";
   document.getElementById("lista").innerHTML = "";
-  document.getElementById("relatorio").innerHTML = "";
 
   const lista = document.getElementById("listaUsuarios");
   lista.innerHTML = "";
@@ -381,4 +399,26 @@ async function devolverLivro(livroId, usuarioId) {
   alert(msg);
 
   carregarUsuarios();
+}
+
+function setAtivo(botaoId) {
+  document.getElementById("btnLivros").classList.remove("ativo");
+  document.getElementById("btnUsuarios").classList.remove("ativo");
+  document.getElementById("btnRelatorio").classList.remove("ativo");
+
+  document.getElementById(botaoId).classList.add("ativo");
+}
+
+window.onload = () => {
+  carregarLivros();
+};
+
+function animarTroca() {
+  const conteudo = document.querySelector(".conteudo");
+
+  conteudo.classList.add("fade");
+
+  setTimeout(() => {
+    conteudo.classList.remove("fade");
+  }, 300);
 }

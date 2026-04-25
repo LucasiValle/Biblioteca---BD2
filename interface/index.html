@@ -1,102 +1,120 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Biblioteca</title>
   <link rel="stylesheet" href="./style.css">
 </head>
-  <!--Padrão para acessar o servidor --- http://localhost:3000-->
+<!--Padrão para acessar o servidor --- http://localhost:3000-->
+
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <h2 class="logo">📚 Biblioteca</h2>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <h2 class="logo">📚 IFSCTECA</h2>
 
-    <button onclick="carregarLivros()">📖 Livros</button>
-    <button onclick="carregarUsuarios()">👤 Usuarios</button>
-    <button onclick="verRelatorio()">📊 Relatório</button>
-  </aside>
+      <button id="btnLivros" onclick="carregarLivros()">📖 Livros</button>
+      <button id="btnUsuarios" onclick="carregarUsuarios()">👤 Usuarios</button>
+      <button id="btnRelatorio" onclick="verRelatorio()">📊 Relatório</button>
+    </aside>
 
-  <!-- CONTEÚDO -->
-  <main class="conteudo">
+    <!-- CONTEÚDO -->
+    <main class="conteudo">
 
-    <!-- BUSCA -->
-    <div class="topo">
-      <input id="buscaTopo" placeholder="Buscar livros...">
-      <button onclick="buscarTopo()">Buscar</button>
-      <button onclick="abrirModalAdicionar()">Adicionar</button>
-      <button onclick="abrirModalAdicionarUsuario()">Novo Usuário</button>
-    </div>
+      <!-- BUSCA -->
+      <div class="topo">
+        <input id="buscaTopo" placeholder="Buscar livros...">
+        <button onclick="buscarTopo()">Buscar</button>
+        <button onclick="abrirModalAdicionar()">Adicionar</button>
+        <button onclick="abrirModalAdicionarUsuario()">Novo Usuário</button>
+      </div>
 
-    <!-- RELATÓRIO -->
-    <ul id="relatorio"></ul>
+      <!-- ÁREA LIVROS -->
+      <div id="areaLivros">
+        <ul id="lista"></ul>
+      </div>
 
-    <!-- LISTA -->
-    <ul id="lista"></ul>
+      <!-- ÁREA USUÁRIOS -->
+      <div id="areaUsuarios">
+        <ul id="listaUsuarios"></ul>
+      </div>
 
-    <!-- LISTA DE USUÁRIOS -->
-    <ul id="listaUsuarios"></ul>
+      <!-- ÁREA RELATÓRIO -->
+      <div id="areaRelatorio">
+        <h2>📊 Relatório de Livros por Gênero</h2>
 
-  </main>
+        <table id="tabelaRelatorio">
+          <thead>
+            <tr>
+              <th>Gênero</th>
+              <th>Total de Exemplares</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-</div>
+    </main>
 
-<!-- MODAL ADICIONAR / EDITAR -->
-<div id="modalLivro" class="modal">
-  <div class="modal-conteudo">
-    <h2 id="modalTitulo">Adicionar Livro</h2>
+  </div>
 
-    <input id="modalId" type="hidden">
-    <input id="modalIdManual" placeholder="ID ex: 16">
-    <input id="modalTituloLivro" placeholder="Título">
-    <input id="modalAutor" placeholder="Autor">
-    <input id="modalGenero" placeholder="Gênero">
-    <input id="modalExemplares" type="number" placeholder="Exemplares">
-    <input id="modalImagem" placeholder="Imagem ex: 1.jpg">
+  <!-- MODAL ADICIONAR / EDITAR -->
+  <div id="modalLivro" class="modal">
+    <div class="modal-conteudo">
+      <h2 id="modalTitulo">Adicionar Livro</h2>
 
-    <div class="modal-botoes">
-      <button onclick="salvarLivro()">Salvar</button>
-      <button onclick="fecharModal()">Cancelar</button>
+      <input id="modalId" type="hidden">
+      <input id="modalIdManual" placeholder="ID ex: 16">
+      <input id="modalTituloLivro" placeholder="Título">
+      <input id="modalAutor" placeholder="Autor">
+      <input id="modalGenero" placeholder="Gênero">
+      <input id="modalExemplares" type="number" placeholder="Exemplares">
+      <input id="modalImagem" placeholder="Imagem ex: 1.jpg">
+
+      <div class="modal-botoes">
+        <button onclick="salvarLivro()">Salvar</button>
+        <button onclick="fecharModal()">Cancelar</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- MODAL USUÁRIO -->
-<div id="modalUsuario" class="modal">
-  <div class="modal-conteudo">
-    <h2 id="modalTituloUsuario">Adicionar Usuário</h2>
+  <!-- MODAL USUÁRIO -->
+  <div id="modalUsuario" class="modal">
+    <div class="modal-conteudo">
+      <h2 id="modalTituloUsuario">Adicionar Usuário</h2>
 
-    <input id="usuarioId" placeholder="ID ex: u1">
-    <input id="usuarioNome" placeholder="Nome">
-    <input id="usuarioEmail" placeholder="Email">
-    <input id="usuarioTelefone" placeholder="Telefone">
+      <input id="usuarioId" placeholder="ID ex: u1">
+      <input id="usuarioNome" placeholder="Nome">
+      <input id="usuarioEmail" placeholder="Email">
+      <input id="usuarioTelefone" placeholder="Telefone">
 
-    <div class="modal-botoes">
-      <button onclick="salvarUsuario()">Salvar</button>
-      <button onclick="fecharModalUsuario()">Cancelar</button>
+      <div class="modal-botoes">
+        <button onclick="salvarUsuario()">Salvar</button>
+        <button onclick="fecharModalUsuario()">Cancelar</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- MODAL EMPRÉSTIMO -->
-<div id="modalEmprestimo" class="modal">
-  <div class="modal-conteudo">
-    <h2>Emprestar Livro</h2>
+  <!-- MODAL EMPRÉSTIMO -->
+  <div id="modalEmprestimo" class="modal">
+    <div class="modal-conteudo">
+      <h2>Emprestar Livro</h2>
 
-    <input id="emprestimoLivroId" type="hidden">
+      <input id="emprestimoLivroId" type="hidden">
 
-    <select id="selectUsuario"></select>
+      <select id="selectUsuario"></select>
 
-    <div class="modal-botoes">
-      <button onclick="confirmarEmprestimo()">Confirmar</button>
-      <button onclick="fecharModalEmprestimo()">Cancelar</button>
+      <div class="modal-botoes">
+        <button onclick="confirmarEmprestimo()">Confirmar</button>
+        <button onclick="fecharModalEmprestimo()">Cancelar</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>
