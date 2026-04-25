@@ -48,11 +48,8 @@ async function carregarLivros() {
         onerror="this.onerror=null; this.src='/img/padrao.png';"
        >
       <h3>${livro.titulo}</h3>
-      <p>ID: ${livro._id}</p>
       <p>${livro.autor}</p>
       <p>${livro.genero}</p>
-      <p>Total: ${livro.exemplares} exemplares</p>
-      <p>Emprestados: ${emprestados}</p>
       <p>Disponíveis: ${disponiveis}</p>
 
       <button onclick="deletarLivro('${livro._id}')">🗑️ Excluir</button>
@@ -455,9 +452,11 @@ async function mostrarLivrosPorGenero(genero) {
         onerror="this.onerror=null; this.src='/img/padrao.png';"
       >
       <h3>${livro.titulo}</h3>
+      <p>ID: ${livro._id}</p>
       <p>${livro.autor}</p>
       <p>${livro.genero}</p>
       <p>Total: ${livro.exemplares}</p>
+      <p>Emprestados: ${emprestados}</p>
       <p>Disponíveis: ${disponiveis}</p>
     `;
 
