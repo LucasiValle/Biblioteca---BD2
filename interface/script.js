@@ -269,6 +269,7 @@ async function carregarUsuarios() {
       ${livrosEmprestados}
 
       <button onclick='abrirModalEditarUsuario(${JSON.stringify(usuario)})'>✏️ Editar</button>
+      <button onclick="deletarUsuario('${usuario._id}')">🗑️ Excluir</button>
     `;
 
     lista.appendChild(li);
@@ -462,4 +463,13 @@ async function mostrarLivrosPorGenero(genero) {
 
     lista.appendChild(li);
   });
+}
+
+async function deletarUsuario(id) {
+  await fetch(`/usuarios/${id}`, {
+    method: "DELETE"
+  });
+
+  alert("Usuário removido!");
+  carregarUsuarios();
 }

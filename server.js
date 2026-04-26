@@ -199,6 +199,22 @@ app.put("/usuarios/replace/:id", async (req, res) => {
   }
 });
 
+// Deletar usuário
+app.delete("/usuarios/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    await usuarios.deleteOne({
+      _id: id
+    });
+
+    res.send("Usuário removido!");
+  } catch (erro) {
+    console.log("Erro ao deletar usuário:", erro);
+    res.status(500).send("Erro ao deletar usuário");
+  }
+});
+
 
 // Realizar empréstimo de livro
 app.post("/emprestimos", async (req, res) => {
