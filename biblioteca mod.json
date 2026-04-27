@@ -1,0 +1,152 @@
+[
+  {
+    "_id": "1",
+    "titulo": "MongoDB Essencial",
+    "autor": "Carlos Silva",
+    "ano": 2021,
+    "genero": "Tecnologia",
+    "exemplares": 5,
+    "emprestimos": [],
+    "imagem": "1.png"
+  },
+  {
+    "_id": "2",
+    "titulo": "Dom Casmurro",
+    "autor": "Machado de Assis",
+    "ano": 1899,
+    "genero": "Literatura",
+    "exemplares": 3,
+    "emprestimos": ["joao123", "maria88"],
+    "imagem": "2.png"
+  },
+  {
+    "_id": "3",
+    "titulo": "Clean Code",
+    "autor": "Robert C. Martin",
+    "ano": 2008,
+    "genero": "Tecnologia",
+    "exemplares": 2,
+    "emprestimos": ["ana_dev"],
+    "imagem": "3.png"
+  },
+  {
+    "_id": "4",
+    "titulo": "O Cortiço",
+    "autor": "Aluísio Azevedo",
+    "ano": 1890,
+    "genero": "Literatura",
+    "exemplares": 4,
+    "emprestimos": [],
+    "imagem": "4.png"
+  },
+  {
+    "_id": "5",
+    "titulo": "Harry Potter e a Pedra Filosofal",
+    "autor": "J.K. Rowling",
+    "ano": 1997,
+    "genero": "Fantasia",
+    "exemplares": 6,
+    "emprestimos": ["paulo21"],
+    "imagem": "5.png"
+  },
+  {
+    "_id": "6",
+    "titulo": "Senhor dos Anéis: A Sociedade do Anel",
+    "autor": "J.R.R. Tolkien",
+    "ano": 1954,
+    "genero": "Fantasia",
+    "exemplares": 5,
+    "emprestimos": [],
+    "imagem": "6.png"
+  },
+  {
+    "_id": "7",
+    "titulo": "Introdução a Algoritmos",
+    "autor": "Thomas H. Cormen",
+    "ano": 2009,
+    "genero": "Tecnologia",
+    "exemplares": 3,
+    "emprestimos": ["maria88"],
+    "imagem": "7.png"
+  },
+  {
+    "_id": "8",
+    "titulo": "Capitães da Areia",
+    "autor": "Jorge Amado",
+    "ano": 1937,
+    "genero": "Literatura",
+    "exemplares": 2,
+    "emprestimos": [],
+    "imagem": "8.png"
+  },
+  {
+    "_id": "9",
+    "titulo": "1984",
+    "autor": "George Orwell",
+    "ano": 1949,
+    "genero": "Ficção",
+    "exemplares": 7,
+    "emprestimos": ["joao123"],
+    "imagem": "9.png"
+  },
+  {
+    "_id": "10",
+    "titulo": "A Revolução dos Bichos",
+    "autor": "George Orwell",
+    "ano": 1945,
+    "genero": "Ficção",
+    "exemplares": 3,
+    "emprestimos": [],
+    "imagem": "10.png"
+  },
+  {
+    "_id": "11",
+    "titulo": "Código Limpo em JavaScript",
+    "autor": "Douglas Crockford",
+    "ano": 2015,
+    "genero": "Tecnologia",
+    "exemplares": 4,
+    "emprestimos": [],
+    "imagem": "11.png"
+  },
+  {
+    "_id": "12",
+    "titulo": "O Pequeno Príncipe",
+    "autor": "Antoine de Saint-Exupéry",
+    "ano": 1943,
+    "genero": "Infantil",
+    "exemplares": 10,
+    "emprestimos": ["ana_dev"],
+    "imagem": "12.png"
+  },
+  {
+    "_id": "13",
+    "titulo": "It: A Coisa",
+    "autor": "Stephen King",
+    "ano": 1986,
+    "genero": "Terror",
+    "exemplares": 5,
+    "emprestimos": [],
+    "imagem": "13.png"
+  },
+  {
+    "_id": "14",
+    "titulo": "O Hobbit",
+    "autor": "J.R.R. Tolkien",
+    "ano": 1937,
+    "genero": "Fantasia",
+    "exemplares": 6,
+    "emprestimos": ["paulo21"],
+    "imagem": "14.png"
+  },
+  {
+    "_id": "15",
+    "titulo": "A Menina que Roubava Livros",
+    "autor": "Markus Zusak",
+    "ano": 2005,
+    "genero": "Drama",
+    "exemplares": 4,
+    "emprestimos": [],
+    "imagem": "15.png"
+  }
+]
